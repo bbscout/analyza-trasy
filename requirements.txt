@@ -6,7 +6,6 @@ numpy==1.23.5
 osmnx==1.2.2
 OWSLib==0.28.1
 pandas==1.5.3
-Pillow==9.1.0
 Pillow==9.5.0
 pyproj==3.3.1
 rasterio==1.2.10
