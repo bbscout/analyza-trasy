@@ -17,6 +17,9 @@ import streamlit as st
 from streamlit_folium import st_folium
 import os
 import pickle
+from shapely.geometry import Point, LineString
+import pyproj
+from shapely.ops import transform
 
 ### Absoluní cesta ke složce skriptu
 def get_script_dir():
@@ -26,7 +29,7 @@ def get_script_dir():
 def get_data_path(path):
     #if path list return list of paths
     if isinstance(path, list):
-        return [os.path.join(get_script_dir(), p) for p in path]
+        return [os.path.join(get_script_dir(),"cache", p) for p in path]
     else:
         return os.path.join(get_script_dir(),"cache", path)
     
@@ -170,6 +173,78 @@ def parse_coordinates(coordinates_str):
     coordinates = (latitude, longitude)
     
     return coordinates
+
+# Funkce pro nalezení nejbližšího bodu na linii
+def nearest_point_on_line(point, line):
+    return line.interpolate(line.project(point))
+
+def length_in_meters(geometry):
+    """
+    Převede délku liniové geometrie z WGS84 (EPSG:4326) na S-JTSK (EPSG:5514) a vrátí délku v metrech.
+
+    :param geometry: Liniová geometrie ve formátu WGS84 (EPSG:4326)
+    :return: Délka geometrie v jednotkách S-JTSK (metrech)
+    """
+    if not isinstance(geometry, LineString):
+        raise ValueError("Input geometry must be a LineString.")
+
+    # Projekce pro konverzi mezi souřadnicovými systémy
+    project_WGS84_to_SJTSK = pyproj.Transformer.from_crs("EPSG:4326", "EPSG:5514", always_xy=True).transform
+
+    # Převod geometrie na S-JTSK
+    geometry_sjtsk = transform(project_WGS84_to_SJTSK, geometry)
+
+    # Výpočet délky v metrech
+    length_m = geometry_sjtsk.length
+
+    return length_m
+
+
+# Funkce pro přidání nového uzlu na nejbližší hranu
+def add_node_on_nearest_edge(G, point):
+    # Vyhledejte nejbližší hranu
+    nearest_edge = ox.distance.nearest_edges(G, X=[point[1]], Y=[point[0]])[0]
+    u, v, _ = nearest_edge
+    
+    # Vytvořte Point objekt ze zadaných souřadnic
+    point_geom = Point(point[::-1])
+    
+    # Získejte geometrii nejbližší hrany pomocí get_route_edge_attributes a vypočítejte nejbližší bod na ní
+    edge_geom = ox.utils_graph.get_route_edge_attributes(G, [u, v], attribute='geometry')[0]
+    nearest_point = nearest_point_on_line(point_geom, edge_geom)
+    
+    # Rozdělte původní geometrii hrany na dvě části pomocí nejbližšího bodu
+    coords_list = list(edge_geom.coords)
+    coords_np = np.array(coords_list)
+    nearest_point_np = np.array(nearest_point.coords[0])
+    nearest_point_index = np.argmin(np.linalg.norm(coords_np - nearest_point_np, axis=1))
+    first_part = LineString(coords_list[:nearest_point_index + 1] + [nearest_point.coords[0]])
+    second_part = LineString([nearest_point.coords[0]] + coords_list[nearest_point_index:])
+    
+    # Přidejte nový uzel do grafu
+    new_node_id = max(G.nodes) + 1
+    G.add_node(new_node_id, x=nearest_point.x, y=nearest_point.y, osmid=new_node_id)
+    
+    # Přidejte nové hrany spojující nový uzel se starými uzly
+    edge_data = G[u][v][0].copy()
+
+    G.add_edge(u, new_node_id, **edge_data)
+    G.add_edge(new_node_id, v, **edge_data)
+    
+    # Nastavte geometrii nových hran
+    G[u][new_node_id][0]['geometry'] = first_part
+    G[new_node_id][v][0]['geometry'] = second_part
+
+    # Aktualizujte délku nových hran
+    G[u][new_node_id][0]['length'] = length_in_meters(first_part)
+    G[new_node_id][v][0]['length'] = length_in_meters(second_part)
+    
+    # Odstraňte původní hranu
+    G.remove_edge(u, v)
+
+    return G
+
+
 
 ### Převod souřadnic na nejbližší node
 def find_nearest_nodes(seznam_gps, G):
@@ -356,6 +431,14 @@ if __name__ == '__main__':
         update_status(status,"Stahuji OSM data") ### @@@ aktualizace streamlit stavu
         G = download_osm_graph(center_coordinates, area_half_side_length)
 
+        coordinates_str = "49.3857275N, 12.7984592E"
+
+        # Převeďte souřadnice na standardní formát
+        point = parse_coordinates(coordinates_str)
+
+        # Vytvoří nový uzel na hraně, která je nejbližší k bodu
+        G = add_node_on_nearest_edge(G, point)
+
         ### Stažení výškových dat DMR5G
         bbox = get_bbox(center_coordinates, area_half_side_length)
         user_agent = "Mozilla/5.0 (Linux; Android 8.0.0; SM-G960F Build/R16NW) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/62.0.3202.84 Mobile Safari/537.36"
@@ -395,14 +478,16 @@ if __name__ == '__main__':
         ox.io.save_graphml(G_elev, filepath=get_data_path('g_elev.graphml'))
 
         ### Převod souřadnic na nejbližší node
-        gps_seznam = ["49.3926261N, 12.8029267E",
-        "49.3856700N, 12.8102089E",
-        "49.3801017N, 12.8202792E",
-        "49.3694169N, 12.8150381E",
-        "49.3770761N, 12.8012128E",
-        "49.3840933N, 12.7845400E",
-        "49.4017264N, 12.8011631E",
-        "49.3987294N, 12.7941933E"]
+        gps_seznam = [#"49.3926261N, 12.8029267E",
+        #"49.3856700N, 12.8102089E",
+        #"49.3801017N, 12.8202792E",
+        #"49.3694169N, 12.8150381E",
+        #"49.3770761N, 12.8012128E",
+        #"49.3840933N, 12.7845400E",
+        #"49.4017264N, 12.8011631E",
+        #"49.3987294N, 12.7941933E",
+        "49.3857275N, 12.7984592E"
+        ]
 
         update_status(status, "Převod souřadnic na nejbližší node") ### @@@ aktualizace streamlit stavu
         node_ids = find_nearest_nodes(gps_seznam, G_elev)
