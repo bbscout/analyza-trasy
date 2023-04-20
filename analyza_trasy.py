@@ -199,9 +199,26 @@ def length_in_meters(geometry):
 
     return length_m
 
+# Funkce pro nalezení nejbližšího uzlu v toleranci
+def find_nearby_node(G, point, tolerance=100):
+    # Najděte uzly v dosahu tolerance
+    nearby_nodes = ox.distance.nearest_nodes(G, X=[point[1]], Y=[point[0]], return_dist=True)
+    for node, dist in zip(nearby_nodes[0], nearby_nodes[1]):
+        if dist <= tolerance:
+            return node  # Pokud existuje uzel v toleranci, vraťte jeho ID
+    return None  # Pokud není žádný uzel v toleranci, vraťte None
+
+
 
 # Funkce pro přidání nového uzlu na nejbližší hranu
-def add_node_on_nearest_edge(G, point):
+def add_node_on_nearest_edge(G, point, search_nearby=True):
+
+    # Ověří, zda se poblíž vytvářeného uzlu nenachází jiný vhodný uzel v toleranci, pokud ano, vrátí graf bez změn
+    if search_nearby:
+        nearby_node = find_nearby_node(G, point)
+        if nearby_node is not None:
+            return G
+    
     # Vyhledejte nejbližší hranu
     nearest_edge = ox.distance.nearest_edges(G, X=[point[1]], Y=[point[0]])[0]
     u, v, _ = nearest_edge
@@ -210,7 +227,7 @@ def add_node_on_nearest_edge(G, point):
     point_geom = Point(point[::-1])
     
     # Získejte geometrii nejbližší hrany pomocí get_route_edge_attributes a vypočítejte nejbližší bod na ní
-    edge_geom = ox.utils_graph.get_route_edge_attributes(G, [u, v], attribute='geometry')[0]
+    edge_geom = G[u][v][0]['geometry']
     nearest_point = nearest_point_on_line(point_geom, edge_geom)
     
     # Rozdělte původní geometrii hrany na dvě části pomocí nejbližšího bodu
@@ -238,9 +255,26 @@ def add_node_on_nearest_edge(G, point):
     # Aktualizujte délku nových hran
     G[u][new_node_id][0]['length'] = length_in_meters(first_part)
     G[new_node_id][v][0]['length'] = length_in_meters(second_part)
+
+    ### Přidání hran v opačném směru
+    # Reverse the coordinates to create new LineStrings
+    first_part_reversed = LineString(first_part.coords[::-1])
+    second_part_reversed = LineString(second_part.coords[::-1])
+
+    G.add_edge(new_node_id, u, **edge_data)
+    G.add_edge(v, new_node_id, **edge_data)
+    
+    # Nastavte geometrii nových hran
+    G[new_node_id][u][0]['geometry'] = first_part_reversed
+    G[v][new_node_id][0]['geometry'] = second_part_reversed
+
+    # Aktualizujte délku nových hran
+    G[u][new_node_id][0]['length'] = length_in_meters(first_part_reversed)
+    G[new_node_id][v][0]['length'] = length_in_meters(second_part_reversed)
     
     # Odstraňte původní hranu
     G.remove_edge(u, v)
+    G.remove_edge(v, u)
 
     return G
 
@@ -431,13 +465,13 @@ if __name__ == '__main__':
         update_status(status,"Stahuji OSM data") ### @@@ aktualizace streamlit stavu
         G = download_osm_graph(center_coordinates, area_half_side_length)
 
-        coordinates_str = "49.3857275N, 12.7984592E"
+        #coordinates_str = "49.3930278N, 12.8011208E"
 
         # Převeďte souřadnice na standardní formát
-        point = parse_coordinates(coordinates_str)
+        #point = parse_coordinates(coordinates_str)
 
         # Vytvoří nový uzel na hraně, která je nejbližší k bodu
-        G = add_node_on_nearest_edge(G, point)
+        #G = add_node_on_nearest_edge(G, point, search_nearby=False)
 
         ### Stažení výškových dat DMR5G
         bbox = get_bbox(center_coordinates, area_half_side_length)
@@ -478,15 +512,14 @@ if __name__ == '__main__':
         ox.io.save_graphml(G_elev, filepath=get_data_path('g_elev.graphml'))
 
         ### Převod souřadnic na nejbližší node
-        gps_seznam = [#"49.3926261N, 12.8029267E",
-        #"49.3856700N, 12.8102089E",
-        #"49.3801017N, 12.8202792E",
-        #"49.3694169N, 12.8150381E",
-        #"49.3770761N, 12.8012128E",
-        #"49.3840933N, 12.7845400E",
-        #"49.4017264N, 12.8011631E",
-        #"49.3987294N, 12.7941933E",
-        "49.3857275N, 12.7984592E"
+        gps_seznam = ["49.3926261N, 12.8029267E",
+        "49.3856700N, 12.8102089E",
+        "49.3801017N, 12.8202792E",
+        "49.3694169N, 12.8150381E",
+        "49.3770761N, 12.8012128E",
+        "49.3840933N, 12.7845400E",
+        "49.4017264N, 12.8011631E",
+        "49.3987294N, 12.7941933E"
         ]
 
         update_status(status, "Převod souřadnic na nejbližší node") ### @@@ aktualizace streamlit stavu
