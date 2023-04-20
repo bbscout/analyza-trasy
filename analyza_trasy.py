@@ -517,7 +517,7 @@ if __name__ == '__main__':
         if save_changes:
             if version_name:
                 filename = f'body_{version_name}.csv'
-                df.to_csv(filename, sep=',', encoding='utf-8')
+                df.to_csv(filename, sep=',', encoding='utf-8', index=False)
                 force_update = True
             else:
                 st.error("Zadejte název verze.")
@@ -648,16 +648,24 @@ if __name__ == '__main__':
     
     max_combinations_placeholder.write(f"Maximální teoretický počet tras je **{len(shortest_combinations)}**.")
 
-    shortest_combinations = shortest_combinations[:num_returned_paths]
-
     ### Přidání výběru trasy
     max_combinations = len(shortest_combinations)
 
-    slider = st.slider('Vyber trasu podle pořadí', 1, max_combinations, 1)
+    
+    gdf['node_id'] = find_nearest_nodes(gdf, G_elev)
+    
+    #create st radio button for each row in gdf where druh = start and as an output return node_id of selected row
+    start_options = gdf[gdf['druh'] == 'start']['název'].tolist()
+    start_node = st.radio("Vyber startovní bod", start_options ,horizontal=True)
+    if start_node != 'Všechny trasy':
+        start_node = list(G_elev.nodes()).index(gdf[gdf['název'] == start_node]['node_id'].values[0])
+        shortest_combinations = [tup for tup in shortest_combinations if tup[0][0] == start_node]
+
+    shortest_combinations = shortest_combinations[:num_returned_paths]
+    slider = st.slider('Vyber trasu podle pořadí', 1, num_returned_paths, 1)
 
     ### Výběr nejkratší cesty
     shortest_path_nodes = shortest_combinations[slider - 1][0]
-
     col1, col2 = st.columns(2)
 
     with col1:
