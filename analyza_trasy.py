@@ -20,6 +20,8 @@ import pickle
 from shapely.geometry import Point, LineString
 import pyproj
 from shapely.ops import transform
+import pandas as pd
+import geopandas as gpd
 
 ### Absoluní cesta ke složce skriptu
 def get_script_dir():
@@ -44,6 +46,20 @@ def update_status(status, text):
 ### Funkce pro ukončení výpisu statusu průběhu
 def stop_status(status):
     status.empty()
+
+### Funkce pro převod dataframu na geodataframe
+def convert_df_to_gdf(df):
+    # Převod zeměpisných souřadnic na float
+    df['zeměpisná šířka'] = df['zeměpisná šířka'].apply(lambda x: float(x[:-1]) if x[-1] == 'N' else -float(x[:-1]))
+    df['zeměpisná délka'] = df['zeměpisná délka'].apply(lambda x: float(x[:-1]) if x[-1] == 'E' else -float(x[:-1]))
+
+    # Vytvoření geometrie bodů
+    df['geometry'] = df.apply(lambda row: Point(row['zeměpisná délka'], row['zeměpisná šířka']), axis=1)
+
+    # Převod do geodataframe
+    gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
+
+    return gdf
 
 ### Stažení OSM dat
 def download_osm_graph(center_coordinates, area_half_side_length, network_type="all"):
@@ -278,17 +294,20 @@ def add_node_on_nearest_edge(G, point, search_nearby=True):
 
     return G
 
+# Funkce pro přidání nových uzlů na nejbližší hranu pro každý bod v geodataframu
+def add_nodes_from_gdf(G, gdf):
+    for _, row in gdf.iterrows():
+        point = (row.geometry.y, row.geometry.x)  # Extrahuje souřadnice bodu
+        G = add_node_on_nearest_edge(G, point)  # Přidá uzel na nejbližší hranu
 
+    return G
 
 ### Převod souřadnic na nejbližší node
-def find_nearest_nodes(seznam_gps, G):
+def find_nearest_nodes(gdf, G):
     node_ids = []
-    for gps in seznam_gps:
-        # Převod souřadnic na tuple
-        gps_tuple = parse_coordinates(gps)
-        # Vyhledání nejbližšího node pomocí funkce ox.get_nearest_node
-        node_id = ox.distance.nearest_nodes(G, gps_tuple[1], gps_tuple[0])
-        # Přidání node id do seznamu
+    for _, row in gdf.iterrows():
+        point = (row.geometry.y, row.geometry.x)  # Extrahuje souřadnice bodu
+        node_id = ox.distance.nearest_nodes(G, X=[point[1]], Y=[point[0]])[0]
         node_ids.append(node_id)
     return node_ids
 
@@ -311,9 +330,14 @@ def get_node_combinations(node_indexes):
     return list(itertools.permutations(node_indexes))
 
 ### Doplnění kombinací jednotlivých cest o kombinaci různých startovních bodů a jeden cílový bod
-def create_combinations_with_start_end(combinations, gps_start_list, G, end_node):
-    start_node_ids = find_nearest_nodes(gps_start_list, G)
-    start_node_indexes = [list(G.nodes()).index(node_id) for node_id in start_node_ids]
+def create_combinations_with_start_end(combinations, G, gdf):
+    gdf_start = gdf[gdf['druh'] == 'start']
+    start_nodes = find_nearest_nodes(gdf_start, G)
+    gdf_end = gdf[gdf['druh'] == 'cíl']
+    end_node = find_nearest_nodes(gdf_end, G_elev)[0]
+    
+
+    start_node_indexes = [list(G.nodes()).index(node_id) for node_id in start_nodes]
     end_node_index = list(G.nodes()).index(end_node)
 
     new_combinations = []
@@ -447,10 +471,21 @@ if __name__ == '__main__':
     if 'key' not in st.session_state:
         st.session_state['max_results'] = 3000
 
-    with st.expander("Nastavení aplikace"):
-        force_update = st.button("Vynutit úplnou aktualizaci dat")
+    df_points = pd.read_csv('body.csv', sep=',', encoding='utf-8', index_col=0)
+    df_points["druh"] = df_points["druh"].astype('category')
+    
+    with st.expander("Nastavení trasy"):
+        df = st.experimental_data_editor(df_points, use_container_width=True,num_rows="dynamic", height=630 )
+        save_changes = st.button("Uložit změny a přepočítat", type="primary")
+        
         num_returned_paths = st.slider("Maximální počet vrácených tras", 0, st.session_state['max_results'], 40,10)
         max_combinations_placeholder = st.empty()
+        #force_update = st.button("Vynutit úplnou aktualizaci dat")
+    
+    force_update = False
+    if save_changes:
+        df.to_csv('body.csv', sep=',', encoding='utf-8')
+        force_update = True
 
     ### @@@ streamlit stav
     status = st.empty()
@@ -459,19 +494,16 @@ if __name__ == '__main__':
     center_coordinates = (49.40566394099164, 12.80545193036346)  # Rudolfova pila
     area_half_side_length = 5500  # meters; half of the square area side length
 
+    gdf = convert_df_to_gdf(df)
+
     #pickle save the shortest_combinations to a file if file exists and not bool forced to recalculate, load the file
     if not (file_exists('shortest_combinations.pickle')) or not (file_exists('g_elev.graphml')) or force_update:
 
         update_status(status,"Stahuji OSM data") ### @@@ aktualizace streamlit stavu
         G = download_osm_graph(center_coordinates, area_half_side_length)
 
-        #coordinates_str = "49.3930278N, 12.8011208E"
-
-        # Převeďte souřadnice na standardní formát
-        #point = parse_coordinates(coordinates_str)
-
-        # Vytvoří nový uzel na hraně, která je nejbližší k bodu
-        #G = add_node_on_nearest_edge(G, point, search_nearby=False)
+        # Vytvoří nové uzly na hranách, které jsou nejbližší k bodům v dataframu
+        G = add_nodes_from_gdf(G, gdf)
 
         ### Stažení výškových dat DMR5G
         bbox = get_bbox(center_coordinates, area_half_side_length)
@@ -510,20 +542,11 @@ if __name__ == '__main__':
         
         # Save graph to a file
         ox.io.save_graphml(G_elev, filepath=get_data_path('g_elev.graphml'))
-
-        ### Převod souřadnic na nejbližší node
-        gps_seznam = ["49.3926261N, 12.8029267E",
-        "49.3856700N, 12.8102089E",
-        "49.3801017N, 12.8202792E",
-        "49.3694169N, 12.8150381E",
-        "49.3770761N, 12.8012128E",
-        "49.3840933N, 12.7845400E",
-        "49.4017264N, 12.8011631E",
-        "49.3987294N, 12.7941933E"
-        ]
-
+        
+        ### Výpočet nejbližších uzlů pro každé stanoviště z geodataframu
         update_status(status, "Převod souřadnic na nejbližší node") ### @@@ aktualizace streamlit stavu
-        node_ids = find_nearest_nodes(gps_seznam, G_elev)
+        gdf_checkpoint = gdf[gdf['druh'] == 'stanoviště']
+        node_ids = find_nearest_nodes(gdf_checkpoint, G_elev)
 
         ### Zobrazení vybraných uzlů pomocí matplotlib - deaktivováno
         # plot_selected_nodes(G_elev, node_ids)
@@ -549,18 +572,7 @@ if __name__ == '__main__':
         if not libovolny_start:
             update_status(status, "Doplnění kombinací jednotlivých cest o kombinaci různých startovních bodů a jeden cílový bod") ### @@@ aktualizace streamlit stavu
 
-            gps_seznam_start = [
-                "49.4080286N, 12.7872861E",
-                "49.4040633N, 12.7899467E",
-                "49.3995669N, 12.7933800E",
-                "49.3930314N, 12.8016628E",
-                "49.3967183N, 12.7908908E",
-                "49.3807117N, 12.8222619E",
-                "49.3786722N, 12.8105892E",
-            ]
-
-            end_node = ox.distance.nearest_nodes(G_elev, center_coordinates[1], center_coordinates[0])
-            combinations = create_combinations_with_start_end(combinations, gps_seznam_start, G_elev, end_node)
+            combinations = create_combinations_with_start_end(combinations, G_elev, gdf)
 
         ### Alternativní řešení, kdy každý node v území může být startovní
         if libovolny_start:
