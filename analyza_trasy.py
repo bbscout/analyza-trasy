@@ -58,7 +58,6 @@ def convert_df_to_gdf(df):
 
     # Převod do geodataframe
     gdf = gpd.GeoDataFrame(df, geometry='geometry', crs="EPSG:4326")
-
     return gdf
 
 ### Stažení OSM dat
@@ -448,7 +447,7 @@ def create_map(G, mynodes, routes, center_coordinates):
     
     for i, mynode_id in enumerate(mynodes):
         node = G.nodes(data=True)[mynode_id]
-        is_start = (i == 0) and (len(mynodes) - 1 != len(routes))
+        is_start = (i == 0) #and (len(mynodes) - 1 != len(routes))
         icon_anchor = (0, 48) if is_start else (18, 48)
         folium.Marker(location=[node['y'], node['x']], 
                       icon=DivIcon(icon_size=(36, 42.8), icon_anchor=icon_anchor, html=create_svg_marker(i, is_start))
@@ -461,6 +460,9 @@ def create_map(G, mynodes, routes, center_coordinates):
     m.fit_bounds(m.get_bounds(), padding=[50, 50])
     return m
 
+def get_saved_versions():
+    files = [file for file in os.listdir() if file.startswith("body") and file.endswith(".csv")]
+    return sorted(files, reverse=True)
 
 
 
@@ -468,24 +470,64 @@ def create_map(G, mynodes, routes, center_coordinates):
 # Main code
 if __name__ == '__main__':
     ### @@@ streamlit expander s checkboxem "Vynutit úplnou aktualizaci dat"
-    if 'key' not in st.session_state:
+    if 'max_results' not in st.session_state:
         st.session_state['max_results'] = 3000
+    if 'variant_name' not in st.session_state:
+        st.session_state['variant_name'] = ""
 
-    df_points = pd.read_csv('body.csv', sep=',', encoding='utf-8', index_col=0)
-    df_points["druh"] = df_points["druh"].astype('category')
-    
-    with st.expander("Nastavení trasy"):
-        df = st.experimental_data_editor(df_points, use_container_width=True,num_rows="dynamic", height=630 )
-        save_changes = st.button("Uložit změny a přepočítat", type="primary")
-        
-        num_returned_paths = st.slider("Maximální počet vrácených tras", 0, st.session_state['max_results'], 40,10)
-        max_combinations_placeholder = st.empty()
-        #force_update = st.button("Vynutit úplnou aktualizaci dat")
-    
     force_update = False
-    if save_changes:
-        df.to_csv('body.csv', sep=',', encoding='utf-8')
-        force_update = True
+    with st.expander("Nastavení trasy - pozice startu, cíle, stanovišť..."):
+        with st.form('load'):
+            '''
+            ### Načítání uložených variant
+            Zde můžeš vybrat jednu z uložených variant bodů a načíst ji do aplikace. Pokud provedeš změny a budeš je chtít uložit, klikni pod tabulkou na tlačítko "Uložit jako samostatnou verzi".
+            '''
+            #find index from list of files
+            options=get_saved_versions()
+            index = options.index(f'body{st.session_state.variant_name}.csv')
+            load_version = st.selectbox("Vyberte variantu k načtení", options=options, index=index, key="load_version")
+            load_changes = st.form_submit_button("Načíst vybranou variantu", type="secondary")
+
+        if load_changes:
+            selected_version = st.session_state.load_version
+            df_points = pd.read_csv(selected_version, sep=',', encoding='utf-8')
+            st.session_state['variant_name'] = st.session_state.load_version[:-4].replace('body', '')
+            
+        else:
+            df_points = pd.read_csv(f'body{st.session_state.variant_name}.csv', sep=',', encoding='utf-8')
+        df_points["druh"] = df_points["druh"].astype('category')
+
+        '''
+        ### Přehled startovních bodů, stanovišť a cíle
+        '''
+        st.write(f"Aktuálně je vybrána varianta **`body{st.session_state.variant_name}.csv`**.")
+        '''
+        *Data v tabulce můžete podle potřeby kliknutím na vybrané buňky upravovat. Po změně zadejte název varianty a klikněte na tlačítko "Uložit jako samostatnou verzi". Celý model se následně přepočítá a uloží.*
+        '''
+        df = st.experimental_data_editor(df_points, use_container_width=True, num_rows="dynamic", height=630)
+
+        '''
+        **Uložení vybrané varianty**
+
+        Pokud zadáte jako název varianty "A", uloží se do souboru `body_A.csv`. Pokud zadáte název, který již existuje, bude přepsán.
+        '''
+        version_name = st.text_input("Zadejte název varianty", "")
+        save_changes = st.button("Uložit jako samostatnou variantu", type="primary")
+
+        if save_changes:
+            if version_name:
+                filename = f'body_{version_name}.csv'
+                df.to_csv(filename, sep=',', encoding='utf-8')
+                force_update = True
+            else:
+                st.error("Zadejte název verze.")
+        
+        '''---'''
+
+        num_returned_paths = st.slider("Maximální počet vrácených tras", 0, st.session_state['max_results'], 40, 10)
+        max_combinations_placeholder = st.empty()
+        # force_update = st.button("Vynutit úplnou aktualizaci dat")
+   
 
     ### @@@ streamlit stav
     status = st.empty()
@@ -497,7 +539,7 @@ if __name__ == '__main__':
     gdf = convert_df_to_gdf(df)
 
     #pickle save the shortest_combinations to a file if file exists and not bool forced to recalculate, load the file
-    if not (file_exists('shortest_combinations.pickle')) or not (file_exists('g_elev.graphml')) or force_update:
+    if not (file_exists(f'shortest_combinations{st.session_state.variant_name}.pickle')) or not (file_exists(f'g_elev{st.session_state.variant_name}.graphml')) or force_update:
 
         update_status(status,"Stahuji OSM data") ### @@@ aktualizace streamlit stavu
         G = download_osm_graph(center_coordinates, area_half_side_length)
@@ -541,7 +583,7 @@ if __name__ == '__main__':
 
         
         # Save graph to a file
-        ox.io.save_graphml(G_elev, filepath=get_data_path('g_elev.graphml'))
+        ox.io.save_graphml(G_elev, filepath=get_data_path(f'g_elev{st.session_state.variant_name}.graphml'))
         
         ### Výpočet nejbližších uzlů pro každé stanoviště z geodataframu
         update_status(status, "Převod souřadnic na nejbližší node") ### @@@ aktualizace streamlit stavu
@@ -584,9 +626,8 @@ if __name__ == '__main__':
         update_status(status, "Výpočet délky cesty pro každou kombinaci bodů") ### @@@ aktualizace streamlit stavu
         shortest_combinations = calculate_shortest_combinations(combinations, shortest_paths)
         # Save the shortest_combinations to a pickle file
-        with open(get_data_path('shortest_combinations.pickle'), 'wb') as handle:
+        with open(get_data_path(f'shortest_combinations{st.session_state.variant_name}.pickle'), 'wb') as handle:
             pickle.dump(shortest_combinations, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        st.session_state.force_update_shortest_combinations = False
     else:
         update_status(status, "Nahrávám uložená OSM data s výškovými daty")
         edge_dtypes = {
@@ -600,10 +641,9 @@ if __name__ == '__main__':
             "elevation": float
         }
 
-        G_elev = ox.io.load_graphml(get_data_path('g_elev.graphml'), edge_dtypes=edge_dtypes, node_dtypes=node_dtypes)
-
+        G_elev = ox.io.load_graphml(get_data_path(f'g_elev{st.session_state.variant_name}.graphml'), edge_dtypes=edge_dtypes, node_dtypes=node_dtypes)
         update_status(status, "Nahrávám uložené kombinace nejkratších tras")
-        with open(get_data_path('shortest_combinations.pickle'), 'rb') as handle:
+        with open(get_data_path(f'shortest_combinations{st.session_state.variant_name}.pickle'), 'rb') as handle:
             shortest_combinations = pickle.load(handle)
     
     max_combinations_placeholder.write(f"Maximální teoretický počet tras je **{len(shortest_combinations)}**.")
@@ -622,7 +662,7 @@ if __name__ == '__main__':
 
     with col1:
         #st.write(f"Délka této trasy je **{int(shortest_combinations[slider - 1][1])}** minut.")
-        st.metric("Délka pochodu", f"{int(shortest_combinations[slider - 1][1])} min", label_visibility="visible")
+        st.metric("Délka pochodu", f"{int(shortest_combinations[slider - 1][1])} min", delta=f"+ {gdf['délka trvání [min]'].sum()} min stanoviště", delta_color="off", label_visibility="visible")
 
     ### Výběr nodů z grafu podle indexů
     mynodes = get_nodes_from_indexes(G_elev, shortest_path_nodes)
@@ -642,6 +682,20 @@ if __name__ == '__main__':
     ### Zobrazení cest pomocí folium a mapy.cz
     update_status(status, "Vytváření mapy pomocí Folium a Mapy.cz") ### @@@ aktualizace streamlit stavu
     m = create_map(G_elev, mynodes, routes, center_coordinates)
+
+    # add gdf points to map with label from column název
+    update_status(status, "Přidávání bodů ze vstupní tabulky do mapy") ### @@@ aktualizace streamlit stavu
+    for index, row in gdf.iterrows():
+        location = [row['geometry'].y, row['geometry'].x] # Získání souřadnic z geometrie bodu
+        # popup_text = f"{row['název']}"
+        # popup = folium.Popup(popup_text, max_width=250)
+
+        # folium.Marker(location, popup=popup).add_to(m)
+        label_text = f"{row['název']}"
+        
+        icon = folium.DivIcon(html=f'<div style="font-size: 8px; background-color: white; border-radius: 2px; padding: 2px; font-family: Arial; color: black; display: inline-block; opacity: .75">{label_text}</div>', icon_size=(1, 1))
+        
+        folium.Marker(location, icon=icon).add_to(m)
 
     stop_status(status) ### @@@ smazání streamlit stavu
     st_folium(m, height=600, width=None, returned_objects=[])
