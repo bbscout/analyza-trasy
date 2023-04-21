@@ -22,6 +22,7 @@ import pyproj
 from shapely.ops import transform
 import pandas as pd
 import geopandas as gpd
+from folium.plugins import Fullscreen
 
 ### Absoluní cesta ke složce skriptu
 def get_script_dir():
@@ -474,8 +475,9 @@ if __name__ == '__main__':
         st.session_state['max_results'] = 3000
     if 'variant_name' not in st.session_state:
         st.session_state['variant_name'] = ""
-
-    force_update = False
+    if 'force_update' not in st.session_state:
+        st.session_state['force_update'] = False
+    
     with st.expander("Nastavení trasy - pozice startu, cíle, stanovišť..."):
         with st.form('load'):
             '''
@@ -503,6 +505,8 @@ if __name__ == '__main__':
         st.write(f"Aktuálně je vybrána varianta **`body{st.session_state.variant_name}.csv`**.")
         '''
         *Data v tabulce můžete podle potřeby kliknutím na vybrané buňky upravovat. Po změně zadejte název varianty a klikněte na tlačítko "Uložit jako samostatnou verzi". Celý model se následně přepočítá a uloží.*
+
+        *Pro získání GPS spuřadnic specifického bodu klikněte do mapy. Nad ní se objeví výpis souřadnic z místa posledního kliknutí.*
         '''
         df = st.experimental_data_editor(df_points, use_container_width=True, num_rows="dynamic", height=630)
 
@@ -518,7 +522,9 @@ if __name__ == '__main__':
             if version_name:
                 filename = f'body_{version_name}.csv'
                 df.to_csv(filename, sep=',', encoding='utf-8', index=False)
-                force_update = True
+                st.session_state['force_update'] = True
+                st.session_state['variant_name'] = filename[:-4].replace('body', '')
+                df_points=df
             else:
                 st.error("Zadejte název verze.")
         
@@ -531,15 +537,14 @@ if __name__ == '__main__':
 
     ### @@@ streamlit stav
     status = st.empty()
-
     ### Stažení OSM dat
     center_coordinates = (49.40566394099164, 12.80545193036346)  # Rudolfova pila
     area_half_side_length = 5500  # meters; half of the square area side length
 
-    gdf = convert_df_to_gdf(df)
+    gdf = convert_df_to_gdf(df_points)
 
     #pickle save the shortest_combinations to a file if file exists and not bool forced to recalculate, load the file
-    if not (file_exists(f'shortest_combinations{st.session_state.variant_name}.pickle')) or not (file_exists(f'g_elev{st.session_state.variant_name}.graphml')) or force_update:
+    if not (file_exists(f'shortest_combinations{st.session_state.variant_name}.pickle')) or not (file_exists(f'g_elev{st.session_state.variant_name}.graphml')) or st.session_state['force_update']:
 
         update_status(status,"Stahuji OSM data") ### @@@ aktualizace streamlit stavu
         G = download_osm_graph(center_coordinates, area_half_side_length)
@@ -579,7 +584,7 @@ if __name__ == '__main__':
 
         ### Výpočet času pro cestu mezi uzly
         update_status(status, "Výpočet času pro cestu mezi uzly") ### @@@ aktualizace streamlit stavu
-        G_elev = add_travel_time_to_edges(G_elev, speed_reduce=0.72)
+        G_elev = add_travel_time_to_edges(G_elev, speed_reduce=0.75)
 
         
         # Save graph to a file
@@ -628,6 +633,7 @@ if __name__ == '__main__':
         # Save the shortest_combinations to a pickle file
         with open(get_data_path(f'shortest_combinations{st.session_state.variant_name}.pickle'), 'wb') as handle:
             pickle.dump(shortest_combinations, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        st.session_state['force_update'] = False
     else:
         update_status(status, "Nahrávám uložená OSM data s výškovými daty")
         edge_dtypes = {
@@ -691,6 +697,9 @@ if __name__ == '__main__':
     update_status(status, "Vytváření mapy pomocí Folium a Mapy.cz") ### @@@ aktualizace streamlit stavu
     m = create_map(G_elev, mynodes, routes, center_coordinates)
 
+    #Přidání možnosti fullscreen do mapy
+    Fullscreen().add_to(m)
+
     # add gdf points to map with label from column název
     update_status(status, "Přidávání bodů ze vstupní tabulky do mapy") ### @@@ aktualizace streamlit stavu
     for index, row in gdf.iterrows():
@@ -706,5 +715,9 @@ if __name__ == '__main__':
         folium.Marker(location, icon=icon).add_to(m)
 
     stop_status(status) ### @@@ smazání streamlit stavu
-    st_folium(m, height=600, width=None, returned_objects=[])
+    last_click_placeholder = st.empty()
+    last_clicked = st_folium(m, height=600, width=None, returned_objects=["last_clicked"], key="new")
+    if last_clicked['last_clicked']:
+        last_click_placeholder.write(f"Souřadnice posledního kliknutí do mapy: **`{last_clicked['last_clicked']['lat']}N`**, **`{last_clicked['last_clicked']['lng']}E`**")
+   
     
