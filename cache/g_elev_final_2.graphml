@@ -27,7 +27,7 @@
 <key id="d2" for="graph" attr.name="crs" attr.type="string"/>
 <key id="d1" for="graph" attr.name="created_with" attr.type="string"/>
 <key id="d0" for="graph" attr.name="created_date" attr.type="string"/>
-<graph edgedefault="directed"><data key="d0">2023-05-16 02:07:16</data>
+<graph edgedefault="directed"><data key="d0">2023-05-16 08:24:39</data>
 <data key="d1">OSMnx 1.2.2</data>
 <data key="d2">epsg:4326</data>
 <data key="d3">True</data>
@@ -6984,10 +6984,10 @@
   <data key="d7">789.0992431640625</data>
 </node>
 <node id="10796702687">
-  <data key="d5">12.796695707556514</data>
-  <data key="d4">49.38842036529977</data>
+  <data key="d5">12.796266</data>
+  <data key="d4">49.388381</data>
   <data key="d10">10796702687</data>
-  <data key="d7">777.7831420898438</data>
+  <data key="d7">781.4315795898438</data>
 </node>
 <node id="10796702688">
   <data key="d5">12.798228645485636</data>
@@ -6996,21 +6996,15 @@
   <data key="d7">792.8469848632812</data>
 </node>
 <node id="10796702689">
-  <data key="d5">12.787482764600856</data>
-  <data key="d4">49.38988081521724</data>
-  <data key="d10">10796702689</data>
-  <data key="d7">830.3466796875</data>
-</node>
-<node id="10796702690">
   <data key="d5">12.815544467325907</data>
   <data key="d4">49.376637201929626</data>
-  <data key="d10">10796702690</data>
+  <data key="d10">10796702689</data>
   <data key="d7">710.0184326171875</data>
 </node>
-<node id="10796702691">
+<node id="10796702690">
   <data key="d5">12.810266529879328</data>
   <data key="d4">49.38575463634997</data>
-  <data key="d10">10796702691</data>
+  <data key="d10">10796702690</data>
   <data key="d7">687.48583984375</data>
 </node>
 <edge source="17465192" target="746869409" id="0">
@@ -8624,7 +8618,7 @@
 </edge>
 <edge source="249524381" target="975073253" id="0">
   <data key="d11">[23112824, 1072730068, 1072730069, 560484900]</data>
-  <data key="d12">['track', 'unclassified']</data>
+  <data key="d12">['unclassified', 'track']</data>
   <data key="d25">no</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
@@ -9253,7 +9247,7 @@
 </edge>
 <edge source="256942994" target="257101407" id="0">
   <data key="d11">[60168321, 1062052931]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">213.03400000000002</data>
@@ -9396,6 +9390,17 @@
   <data key="d17">0.075</data>
   <data key="d18">0.7321302325581397</data>
 </edge>
+<edge source="256943057" target="1259931739" id="0">
+  <data key="d11">23806148</data>
+  <data key="d12">service</data>
+  <data key="d13">False</data>
+  <data key="d14">False</data>
+  <data key="d15">507.87600000000003</data>
+  <data key="d20">LINESTRING (12.785741 49.3908478, 12.7859057 49.3907517, 12.7860544 49.3906696, 12.7890374 49.3890223, 12.7893393 49.3888739, 12.7907255 49.3884505, 12.791431 49.388235)</data>
+  <data key="d16">-0.01</data>
+  <data key="d17">0.01</data>
+  <data key="d18">9.44885581395349</data>
+</edge>
 <edge source="256943057" target="10308914563" id="0">
   <data key="d11">50428420</data>
   <data key="d12">service</data>
@@ -9418,17 +9423,6 @@
   <data key="d16">-0.093</data>
   <data key="d17">0.093</data>
   <data key="d18">1.597097674418605</data>
-</edge>
-<edge source="256943057" target="10796702689" id="0">
-  <data key="d11">23806148</data>
-  <data key="d12">service</data>
-  <data key="d13">False</data>
-  <data key="d14">False</data>
-  <data key="d15">166.01020955184586</data>
-  <data key="d20">LINESTRING (12.785741 49.3908478, 12.7859057 49.3907517, 12.7860544 49.3906696, 12.787482764600856 49.38988081521724)</data>
-  <data key="d16">-0.005</data>
-  <data key="d17">0.005</data>
-  <data key="d18">3.088562038173877</data>
 </edge>
 <edge source="256943074" target="10308914563" id="0">
   <data key="d11">50428420</data>
@@ -9626,7 +9620,7 @@
 </edge>
 <edge source="257101407" target="256942994" id="0">
   <data key="d11">[60168321, 1062052931]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">213.034</data>
@@ -10257,7 +10251,7 @@
   <data key="d22">2</data>
   <data key="d19">26</data>
   <data key="d12">primary</data>
-  <data key="d24">['90', '50']</data>
+  <data key="d24">['50', '90']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">655.065</data>
@@ -10666,7 +10660,7 @@
 </edge>
 <edge source="257951489" target="258679881" id="0">
   <data key="d11">[131240888, 429681329]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">278.325</data>
@@ -10688,7 +10682,7 @@
 </edge>
 <edge source="257951489" target="7183682788" id="0">
   <data key="d11">[23805485, 681759550]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">[False, True]</data>
   <data key="d15">140.865</data>
@@ -11108,12 +11102,12 @@
   <data key="d11">[110293300, 549620606]</data>
   <data key="d12">track</data>
   <data key="d13">False</data>
-  <data key="d14">False</data>
-  <data key="d15">677.1149808763862</data>
-  <data key="d20">LINESTRING (12.802845 49.392677, 12.8025002 49.3925047, 12.80235 49.3923714, 12.8021852 49.3922252, 12.8019705 49.391955, 12.8015983 49.3917128, 12.8009971 49.3913308, 12.7995227 49.3902872, 12.7965784 49.3883429, 12.796695707556514 49.38842036529977)</data>
-  <data key="d16">0.079</data>
-  <data key="d17">0.079</data>
-  <data key="d18">13.542299617527725</data>
+  <data key="d14">True</data>
+  <data key="d15">688.3081187439606</data>
+  <data key="d20">LINESTRING (12.802845 49.392677, 12.8025002 49.3925047, 12.80235 49.3923714, 12.8021852 49.3922252, 12.8019705 49.391955, 12.8015983 49.3917128, 12.8009971 49.3913308, 12.7995227 49.3902872, 12.7965784 49.3883429, 12.796446 49.388374, 12.796266 49.388381, 12.796266 49.388381)</data>
+  <data key="d16">0.083</data>
+  <data key="d17">0.083</data>
+  <data key="d18">13.766162374879212</data>
 </edge>
 <edge source="257962469" target="9957327773" id="0">
   <data key="d11">23888456</data>
@@ -11181,11 +11175,11 @@
   <data key="d17">0.196</data>
   <data key="d18">8.126194805194807</data>
 </edge>
-<edge source="257962479" target="10796702690" id="0">
+<edge source="257962479" target="10796702689" id="0">
   <data key="d11">50428417</data>
   <data key="d12">service</data>
   <data key="d13">False</data>
-  <data key="d14">True</data>
+  <data key="d14">False</data>
   <data key="d15">336.3055509931627</data>
   <data key="d20">LINESTRING (12.8122146 49.3786759, 12.8125144 49.3786063, 12.8126935 49.3785624, 12.8129259 49.3784786, 12.8131235 49.3783809, 12.8133078 49.3782515, 12.813621 49.37802, 12.814333 49.377464, 12.814765 49.377166, 12.8151049 49.3769243, 12.815342 49.376748, 12.815544467325907 49.376637201929626)</data>
   <data key="d16">-0.104</data>
@@ -11214,11 +11208,11 @@
   <data key="d17">0.062</data>
   <data key="d18">17.953920000000004</data>
 </edge>
-<edge source="257962490" target="10796702690" id="0">
+<edge source="257962490" target="10796702689" id="0">
   <data key="d11">50428417</data>
   <data key="d12">service</data>
   <data key="d13">False</data>
-  <data key="d14">True</data>
+  <data key="d14">False</data>
   <data key="d15">383.9082859386911</data>
   <data key="d20">LINESTRING (12.8197071 49.3751727, 12.819611 49.37519, 12.8190986 49.375335, 12.818508 49.375509, 12.817617 49.375773, 12.8171372 49.3759067, 12.81661 49.376106, 12.816157 49.376302, 12.815342 49.376748, 12.815544467325907 49.376637201929626)</data>
   <data key="d16">0.09</data>
@@ -12050,7 +12044,7 @@
 </edge>
 <edge source="258661405" target="747370781" id="0">
   <data key="d11">[23865925, 60169199]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">152.669</data>
@@ -12337,7 +12331,7 @@
 </edge>
 <edge source="258661438" target="258661494" id="0">
   <data key="d11">[23865932, 23865927]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">646.598</data>
@@ -12458,7 +12452,7 @@
 </edge>
 <edge source="258661494" target="258661438" id="0">
   <data key="d11">[23865932, 23865927]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">646.598</data>
@@ -12491,7 +12485,7 @@
 </edge>
 <edge source="258661498" target="403766066" id="0">
   <data key="d11">[34690282, 34690279]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">774.3530000000001</data>
@@ -13481,7 +13475,7 @@
 </edge>
 <edge source="258679881" target="257951489" id="0">
   <data key="d11">[131240888, 429681329]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">278.325</data>
@@ -13897,7 +13891,7 @@
 </edge>
 <edge source="259073804" target="917933527" id="0">
   <data key="d11">[78138336, 83647783]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">[False, True]</data>
   <data key="d15">758.582</data>
@@ -14156,7 +14150,7 @@
 </edge>
 <edge source="259078016" target="611652826" id="0">
   <data key="d11">[548976587, 285950342]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">524.803</data>
@@ -14232,7 +14226,7 @@
 </edge>
 <edge source="259078124" target="5309141526" id="0">
   <data key="d11">[549620602, 1075797315, 1075796814]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">719.531</data>
@@ -15173,7 +15167,7 @@
 </edge>
 <edge source="260142973" target="1897207768" id="0">
   <data key="d11">[769063866, 1061861418]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">670.216</data>
@@ -15569,8 +15563,8 @@
 </edge>
 <edge source="280531206" target="1393843310" id="0">
   <data key="d11">[125509941, 227205717]</data>
-  <data key="d26">['Jiráskova stezka', 'Zlatá stezka']</data>
-  <data key="d12">['track', 'footway']</data>
+  <data key="d26">['Zlatá stezka', 'Jiráskova stezka']</data>
+  <data key="d12">['footway', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">178.25900000000001</data>
@@ -16844,7 +16838,7 @@
 </edge>
 <edge source="397626856" target="8758803230" id="0">
   <data key="d11">[983692762, 983692763, 946145378]</data>
-  <data key="d12">['path', 'footway']</data>
+  <data key="d12">['footway', 'path']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">31.25</data>
@@ -16943,7 +16937,7 @@
 </edge>
 <edge source="403762287" target="403762294" id="0">
   <data key="d11">[34690066, 429820277]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">129.98600000000002</data>
@@ -16954,7 +16948,7 @@
 </edge>
 <edge source="403762294" target="403762287" id="0">
   <data key="d11">[34690066, 429820277]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">129.98600000000002</data>
@@ -17357,7 +17351,7 @@
 </edge>
 <edge source="403766066" target="258661498" id="0">
   <data key="d11">[34690282, 34690279]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">774.353</data>
@@ -17814,7 +17808,7 @@
   <data key="d22">2</data>
   <data key="d19">26</data>
   <data key="d12">primary</data>
-  <data key="d24">['90', '50']</data>
+  <data key="d24">['50', '90']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">655.065</data>
@@ -18813,7 +18807,7 @@
 </edge>
 <edge source="611652826" target="259078016" id="0">
   <data key="d11">[548976587, 285950342]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">524.8029999999999</data>
@@ -20447,7 +20441,7 @@
 </edge>
 <edge source="747351625" target="5309141526" id="0">
   <data key="d11">[1075796813, 1075796814]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">536.0640000000001</data>
@@ -20678,7 +20672,7 @@
 </edge>
 <edge source="747370701" target="1469911786" id="0">
   <data key="d11">[83717441, 133546122]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">209.066</data>
@@ -20721,7 +20715,7 @@
 </edge>
 <edge source="747370781" target="258661405" id="0">
   <data key="d11">[23865925, 60169199]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">152.66899999999998</data>
@@ -21833,7 +21827,7 @@
 </edge>
 <edge source="917933527" target="259073804" id="0">
   <data key="d11">[78138336, 83647783]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">[False, True]</data>
   <data key="d15">758.582</data>
@@ -22294,7 +22288,7 @@
 </edge>
 <edge source="975073253" target="249524381" id="0">
   <data key="d11">[23112824, 1072730068, 560484900, 1072730069]</data>
-  <data key="d12">['track', 'unclassified']</data>
+  <data key="d12">['unclassified', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">328.24299999999994</data>
@@ -22626,6 +22620,17 @@
   <data key="d17">0.242</data>
   <data key="d18">8.423919191919193</data>
 </edge>
+<edge source="1259931739" target="256943057" id="0">
+  <data key="d11">23806148</data>
+  <data key="d12">service</data>
+  <data key="d13">False</data>
+  <data key="d14">True</data>
+  <data key="d15">507.87600000000003</data>
+  <data key="d20">LINESTRING (12.791431 49.388235, 12.7907255 49.3884505, 12.7893393 49.3888739, 12.7890374 49.3890223, 12.7860544 49.3906696, 12.7859057 49.3907517, 12.785741 49.3908478)</data>
+  <data key="d16">0.01</data>
+  <data key="d17">0.01</data>
+  <data key="d18">10.15752</data>
+</edge>
 <edge source="1259931739" target="1259931715" id="0">
   <data key="d11">110293300</data>
   <data key="d12">track</data>
@@ -22641,12 +22646,12 @@
   <data key="d11">[110293300, 549620606]</data>
   <data key="d12">track</data>
   <data key="d13">False</data>
-  <data key="d14">False</data>
-  <data key="d15">425.0822863966121</data>
-  <data key="d20">LINESTRING (12.791431 49.388235, 12.79145 49.388296, 12.791532 49.388408, 12.791649 49.388496, 12.791809 49.388579, 12.792127 49.388703, 12.792556 49.388799, 12.792761 49.388812, 12.792884 49.388804, 12.793104 49.388755, 12.793682 49.388528, 12.793857 49.388477, 12.794075 49.38847, 12.794469 49.388512, 12.794619 49.388511, 12.794945 49.388487, 12.795622 49.388373, 12.795893 49.388351, 12.79608 49.388351, 12.796266 49.388381, 12.796446 49.388374, 12.7965784 49.3883429, 12.796695707556514 49.38842036529977)</data>
-  <data key="d16">-0.114</data>
-  <data key="d17">0.114</data>
-  <data key="d18">5.520549173981975</data>
+  <data key="d14">True</data>
+  <data key="d15">389.65927145185685</data>
+  <data key="d20">LINESTRING (12.791431 49.388235, 12.79145 49.388296, 12.791532 49.388408, 12.791649 49.388496, 12.791809 49.388579, 12.792127 49.388703, 12.792556 49.388799, 12.792761 49.388812, 12.792884 49.388804, 12.793104 49.388755, 12.793682 49.388528, 12.793857 49.388477, 12.794075 49.38847, 12.794469 49.388512, 12.794619 49.388511, 12.794945 49.388487, 12.795622 49.388373, 12.795893 49.388351, 12.79608 49.388351, 12.796266 49.388381, 12.796266 49.388381)</data>
+  <data key="d16">-0.115</data>
+  <data key="d17">0.115</data>
+  <data key="d18">5.060510018855283</data>
 </edge>
 <edge source="1259931739" target="10796702688" id="0">
   <data key="d11">23806148</data>
@@ -22658,17 +22663,6 @@
   <data key="d16">-0.052</data>
   <data key="d17">0.052</data>
   <data key="d18">11.996040697825718</data>
-</edge>
-<edge source="1259931739" target="10796702689" id="0">
-  <data key="d11">23806148</data>
-  <data key="d12">service</data>
-  <data key="d13">False</data>
-  <data key="d14">False</data>
-  <data key="d15">614.6134509497422</data>
-  <data key="d20">LINESTRING (12.791431 49.388235, 12.7907255 49.3884505, 12.7893393 49.3888739, 12.7890374 49.3890223, 12.7860544 49.3906696, 12.787482764600856 49.38988081521724)</data>
-  <data key="d16">0.007</data>
-  <data key="d17">0.007</data>
-  <data key="d18">12.292269018994844</data>
 </edge>
 <edge source="1259931741" target="1259931789" id="0">
   <data key="d11">110293277</data>
@@ -22962,7 +22956,7 @@
 </edge>
 <edge source="1364292446" target="6241842362" id="0">
   <data key="d11">[866426057, 666664398]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">359.78200000000004</data>
@@ -23171,7 +23165,7 @@
 <edge source="1393843310" target="280531206" id="0">
   <data key="d11">[227205717, 125509941]</data>
   <data key="d26">['Jiráskova stezka', 'Zlatá stezka']</data>
-  <data key="d12">['track', 'footway']</data>
+  <data key="d12">['footway', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">178.25900000000001</data>
@@ -23303,7 +23297,7 @@
 </edge>
 <edge source="1444902030" target="10796702684" id="0">
   <data key="d11">[429681324, 1102401326]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">66.886</data>
@@ -23475,7 +23469,7 @@
 </edge>
 <edge source="1469911786" target="747370701" id="0">
   <data key="d11">[83717441, 133546122]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">209.066</data>
@@ -23551,7 +23545,7 @@
 </edge>
 <edge source="1469911806" target="1469911818" id="0">
   <data key="d11">[133546088, 133546106, 133546093]</data>
-  <data key="d12">['steps', 'footway']</data>
+  <data key="d12">['footway', 'steps']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">42.703</data>
@@ -23625,7 +23619,7 @@
 </edge>
 <edge source="1469911818" target="1469911806" id="0">
   <data key="d11">[133546088, 133546106, 133546093]</data>
-  <data key="d12">['steps', 'footway']</data>
+  <data key="d12">['footway', 'steps']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">42.702999999999996</data>
@@ -23913,7 +23907,7 @@
 </edge>
 <edge source="1897207768" target="260142973" id="0">
   <data key="d11">[769063866, 1061861418]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">670.2160000000001</data>
@@ -24937,7 +24931,7 @@
 <edge source="2359199813" target="2359199827" id="0">
   <data key="d11">[589056834, 227205717]</data>
   <data key="d26">Zlatá stezka</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">492.23199999999997</data>
@@ -25024,7 +25018,7 @@
 </edge>
 <edge source="2359199827" target="2359199813" id="0">
   <data key="d11">[589056834, 227205717]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">492.232</data>
@@ -25256,7 +25250,7 @@
 </edge>
 <edge source="2882365455" target="9957646730" id="0">
   <data key="d11">[1086769664, 1086769663]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">321.28</data>
@@ -28635,7 +28629,7 @@
 </edge>
 <edge source="5309141526" target="747351625" id="0">
   <data key="d11">[1075796813, 1075796814]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">536.064</data>
@@ -28646,7 +28640,7 @@
 </edge>
 <edge source="5309141526" target="259078124" id="0">
   <data key="d11">[549620602, 1075797315, 1075796814]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">719.531</data>
@@ -29007,7 +29001,7 @@
   <data key="d17">0.222</data>
   <data key="d18">4.411881188118811</data>
 </edge>
-<edge source="5309141879" target="10796702691" id="0">
+<edge source="5309141879" target="10796702690" id="0">
   <data key="d11">549620607</data>
   <data key="d12">track</data>
   <data key="d13">False</data>
@@ -31007,7 +31001,7 @@
 </edge>
 <edge source="6241842362" target="1364292446" id="0">
   <data key="d11">[866426057, 666664398]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">359.78200000000004</data>
@@ -31882,7 +31876,7 @@
 </edge>
 <edge source="6584063750" target="9628934891" id="0">
   <data key="d11">[1047131138, 701078124]</data>
-  <data key="d12">['track', 'footway']</data>
+  <data key="d12">['footway', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">115.693</data>
@@ -35300,7 +35294,7 @@
   <data key="d17">0.118</data>
   <data key="d18">13.18132441471572</data>
 </edge>
-<edge source="7183609059" target="10796702691" id="0">
+<edge source="7183609059" target="10796702690" id="0">
   <data key="d11">549620607</data>
   <data key="d12">track</data>
   <data key="d13">False</data>
@@ -35624,7 +35618,7 @@
 </edge>
 <edge source="7183682788" target="257951489" id="0">
   <data key="d11">[23805485, 681759550]</data>
-  <data key="d12">['track', 'residential']</data>
+  <data key="d12">['residential', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">[False, True]</data>
   <data key="d15">140.865</data>
@@ -38826,7 +38820,7 @@
 </edge>
 <edge source="9628934891" target="6584063750" id="0">
   <data key="d11">[1047131138, 701078124]</data>
-  <data key="d12">['track', 'footway']</data>
+  <data key="d12">['footway', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">115.69300000000001</data>
@@ -39779,7 +39773,7 @@
 </edge>
 <edge source="9785214038" target="257794616" id="0">
   <data key="d11">[1065493101, 23790591]</data>
-  <data key="d12">['unclassified', 'path']</data>
+  <data key="d12">['path', 'unclassified']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">286.63</data>
@@ -40351,7 +40345,7 @@
 </edge>
 <edge source="9957646730" target="2882365455" id="0">
   <data key="d11">[1086769664, 1086769663]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">321.28</data>
@@ -40450,7 +40444,7 @@
 </edge>
 <edge source="9959392753" target="9995477816" id="0">
   <data key="d11">[1091315094, 1091315095]</data>
-  <data key="d12">['steps', 'path']</data>
+  <data key="d12">['path', 'steps']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">89.96</data>
@@ -41468,7 +41462,7 @@
 </edge>
 <edge source="10271991221" target="10271991240" id="0">
   <data key="d11">[1123189734, 1123189735]</data>
-  <data key="d12">['track', 'unclassified']</data>
+  <data key="d12">['unclassified', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">570.7950000000001</data>
@@ -41501,7 +41495,7 @@
 </edge>
 <edge source="10271991240" target="10271991221" id="0">
   <data key="d11">[1123189734, 1123189735]</data>
-  <data key="d12">['track', 'unclassified']</data>
+  <data key="d12">['unclassified', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">True</data>
   <data key="d15">570.795</data>
@@ -42086,7 +42080,7 @@
 </edge>
 <edge source="10796702684" target="1444902030" id="0">
   <data key="d11">[429681324, 1102401326]</data>
-  <data key="d12">['track', 'path']</data>
+  <data key="d12">['path', 'track']</data>
   <data key="d13">False</data>
   <data key="d14">False</data>
   <data key="d15">66.886</data>
@@ -42161,27 +42155,27 @@
   <data key="d17">0.16</data>
   <data key="d18">29.08883945184279</data>
 </edge>
-<edge source="10796702687" target="1259931739" id="0">
-  <data key="d11">[110293300, 549620606]</data>
-  <data key="d12">track</data>
-  <data key="d13">False</data>
-  <data key="d14">False</data>
-  <data key="d15">425.08228639661206</data>
-  <data key="d20">LINESTRING (12.796695707556514 49.38842036529977, 12.7965784 49.3883429, 12.796446 49.388374, 12.796266 49.388381, 12.79608 49.388351, 12.795893 49.388351, 12.795622 49.388373, 12.794945 49.388487, 12.794619 49.388511, 12.794469 49.388512, 12.794075 49.38847, 12.793857 49.388477, 12.793682 49.388528, 12.793104 49.388755, 12.792884 49.388804, 12.792761 49.388812, 12.792556 49.388799, 12.792127 49.388703, 12.791809 49.388579, 12.791649 49.388496, 12.791532 49.388408, 12.79145 49.388296, 12.791431 49.388235)</data>
-  <data key="d16">0.114</data>
-  <data key="d17">0.114</data>
-  <data key="d18">11.373439100912698</data>
-</edge>
 <edge source="10796702687" target="257962427" id="0">
   <data key="d11">[110293300, 549620606]</data>
   <data key="d12">track</data>
   <data key="d13">False</data>
-  <data key="d14">False</data>
-  <data key="d15">677.1149808763863</data>
-  <data key="d20">LINESTRING (12.796695707556514 49.38842036529977, 12.7965784 49.3883429, 12.7995227 49.3902872, 12.8009971 49.3913308, 12.8015983 49.3917128, 12.8019705 49.391955, 12.8021852 49.3922252, 12.80235 49.3923714, 12.8025002 49.3925047, 12.802845 49.392677)</data>
-  <data key="d16">-0.079</data>
-  <data key="d17">0.079</data>
-  <data key="d18">12.597488016304863</data>
+  <data key="d14">True</data>
+  <data key="d15">688.3081187439608</data>
+  <data key="d20">LINESTRING (12.796266 49.388381, 12.796266 49.388381, 12.796446 49.388374, 12.7965784 49.3883429, 12.7995227 49.3902872, 12.8009971 49.3913308, 12.8015983 49.3917128, 12.8019705 49.391955, 12.8021852 49.3922252, 12.80235 49.3923714, 12.8025002 49.3925047, 12.802845 49.392677)</data>
+  <data key="d16">-0.083</data>
+  <data key="d17">0.083</data>
+  <data key="d18">12.805732441748109</data>
+</edge>
+<edge source="10796702687" target="1259931739" id="0">
+  <data key="d11">[110293300, 549620606]</data>
+  <data key="d12">track</data>
+  <data key="d13">False</data>
+  <data key="d14">True</data>
+  <data key="d15">389.65927145185685</data>
+  <data key="d20">LINESTRING (12.796266 49.388381, 12.796266 49.388381, 12.79608 49.388351, 12.795893 49.388351, 12.795622 49.388373, 12.794945 49.388487, 12.794619 49.388511, 12.794469 49.388512, 12.794075 49.38847, 12.793857 49.388477, 12.793682 49.388528, 12.793104 49.388755, 12.792884 49.388804, 12.792761 49.388812, 12.792556 49.388799, 12.792127 49.388703, 12.791809 49.388579, 12.791649 49.388496, 12.791532 49.388408, 12.79145 49.388296, 12.791431 49.388235)</data>
+  <data key="d16">0.115</data>
+  <data key="d17">0.115</data>
+  <data key="d18">10.42566612580219</data>
 </edge>
 <edge source="10796702688" target="3953955024" id="0">
   <data key="d11">23806148</data>
@@ -42205,51 +42199,29 @@
   <data key="d17">0.052</data>
   <data key="d18">12.895743750162646</data>
 </edge>
-<edge source="10796702689" target="1259931739" id="0">
-  <data key="d11">23806148</data>
-  <data key="d12">service</data>
-  <data key="d13">False</data>
-  <data key="d14">False</data>
-  <data key="d15">614.6134509497422</data>
-  <data key="d20">LINESTRING (12.787482764600856 49.38988081521724, 12.7860544 49.3906696, 12.7890374 49.3890223, 12.7893393 49.3888739, 12.7907255 49.3884505, 12.791431 49.388235)</data>
-  <data key="d16">-0.007</data>
-  <data key="d17">0.007</data>
-  <data key="d18">11.434668854878925</data>
-</edge>
-<edge source="10796702689" target="256943057" id="0">
-  <data key="d11">23806148</data>
-  <data key="d12">service</data>
-  <data key="d13">False</data>
-  <data key="d14">False</data>
-  <data key="d15">166.01020955184586</data>
-  <data key="d20">LINESTRING (12.787482764600856 49.38988081521724, 12.7860544 49.3906696, 12.7859057 49.3907517, 12.785741 49.3908478)</data>
-  <data key="d16">0.005</data>
-  <data key="d17">0.005</data>
-  <data key="d18">3.3202041910369173</data>
-</edge>
-<edge source="10796702690" target="257962479" id="0">
+<edge source="10796702689" target="257962490" id="0">
   <data key="d11">50428417</data>
   <data key="d12">service</data>
   <data key="d13">False</data>
-  <data key="d14">True</data>
-  <data key="d15">336.3055509931626</data>
-  <data key="d20">LINESTRING (12.815544467325907 49.376637201929626, 12.815342 49.376748, 12.8151049 49.3769243, 12.814765 49.377166, 12.814333 49.377464, 12.813621 49.37802, 12.8133078 49.3782515, 12.8131235 49.3783809, 12.8129259 49.3784786, 12.8126935 49.3785624, 12.8125144 49.3786063, 12.8122146 49.3786759)</data>
-  <data key="d16">0.104</data>
-  <data key="d17">0.104</data>
-  <data key="d18">8.99814183259298</data>
-</edge>
-<edge source="10796702690" target="257962490" id="0">
-  <data key="d11">50428417</data>
-  <data key="d12">service</data>
-  <data key="d13">False</data>
-  <data key="d14">True</data>
+  <data key="d14">False</data>
   <data key="d15">383.9082859386911</data>
   <data key="d20">LINESTRING (12.815544467325907 49.376637201929626, 12.815342 49.376748, 12.816157 49.376302, 12.81661 49.376106, 12.8171372 49.3759067, 12.817617 49.375773, 12.818508 49.375509, 12.8190986 49.375335, 12.819611 49.37519, 12.8197071 49.3751727)</data>
   <data key="d16">-0.09</data>
   <data key="d17">0.09</data>
   <data key="d18">7.142479738394254</data>
 </edge>
-<edge source="10796702691" target="7183609059" id="0">
+<edge source="10796702689" target="257962479" id="0">
+  <data key="d11">50428417</data>
+  <data key="d12">service</data>
+  <data key="d13">False</data>
+  <data key="d14">False</data>
+  <data key="d15">336.3055509931626</data>
+  <data key="d20">LINESTRING (12.815544467325907 49.376637201929626, 12.815342 49.376748, 12.8151049 49.3769243, 12.814765 49.377166, 12.814333 49.377464, 12.813621 49.37802, 12.8133078 49.3782515, 12.8131235 49.3783809, 12.8129259 49.3784786, 12.8126935 49.3785624, 12.8125144 49.3786063, 12.8122146 49.3786759)</data>
+  <data key="d16">0.104</data>
+  <data key="d17">0.104</data>
+  <data key="d18">8.99814183259298</data>
+</edge>
+<edge source="10796702690" target="7183609059" id="0">
   <data key="d11">549620607</data>
   <data key="d12">track</data>
   <data key="d13">False</data>
@@ -42260,7 +42232,7 @@
   <data key="d17">0.035</data>
   <data key="d18">7.811415102524267</data>
 </edge>
-<edge source="10796702691" target="5309141879" id="0">
+<edge source="10796702690" target="5309141879" id="0">
   <data key="d11">549620607</data>
   <data key="d12">track</data>
   <data key="d13">False</data>
