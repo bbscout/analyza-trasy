@@ -227,7 +227,83 @@ def find_nearby_node(G, point, tolerance=100):
 
 
 # Funkce pro přidání nového uzlu na nejbližší hranu
+# Function to add a new node on the nearest edge
 def add_node_on_nearest_edge(G, point, search_nearby=True):
+
+    # Check if there's a nearby node in tolerance, if so, return the graph without changes
+    if search_nearby:
+        nearby_node = find_nearby_node(G, point)
+        if nearby_node is not None:
+            return G
+
+    # Find the nearest edge
+    nearest_edge = ox.distance.nearest_edges(G, X=[point[1]], Y=[point[0]])[0]
+    u, v, _ = nearest_edge
+
+    # Create a Point object from the given coordinates
+    point_geom = Point(point[::-1])
+
+    # Iterate over all edges between nodes u and v
+    for key in list(G[u][v].keys()):
+        
+        # Get the geometry of the edge using get_route_edge_attributes and calculate the nearest point on it
+        edge_geom = G[u][v][key]['geometry']
+        nearest_point = nearest_point_on_line(point_geom, edge_geom)
+        
+        # Split the original edge geometry into two parts using the nearest point
+        coords_list = list(edge_geom.coords)
+        coords_np = np.array(coords_list)
+        nearest_point_np = np.array(nearest_point.coords[0])
+        nearest_point_index = np.argmin(np.linalg.norm(coords_np - nearest_point_np, axis=1))
+        first_part = LineString(coords_list[:nearest_point_index + 1] + [nearest_point.coords[0]])
+        second_part = LineString([nearest_point.coords[0]] + coords_list[nearest_point_index:])
+
+        # Add the new node to the graph
+        new_node_id = max(G.nodes) + 1
+        G.add_node(new_node_id, x=nearest_point.x, y=nearest_point.y, osmid=new_node_id)
+
+        # Add new edges connecting the new node with the old nodes
+        edge_data = G[u][v][key].copy()  # Create a unique copy of edge data for each edge
+
+        G.add_edge(u, new_node_id, **edge_data)
+        G.add_edge(new_node_id, v, **edge_data)
+
+        # Set the geometry of the new edges
+        G[u][new_node_id][key]['geometry'] = first_part
+        G[new_node_id][v][key]['geometry'] = second_part
+
+        # Update the length of the new edges
+        G[u][new_node_id][key]['length'] = length_in_meters(first_part)
+        G[new_node_id][v][key]['length'] = length_in_meters(second_part)
+
+        ### Adding edges in the opposite direction
+        # Reverse the coordinates to create new LineStrings
+        first_part_reversed = LineString(first_part.coords[::-1])
+        second_part_reversed = LineString(second_part.coords[::-1])
+
+        G.add_edge(new_node_id, u, **edge_data)
+        G.add_edge(v, new_node_id, **edge_data)
+
+        # Set the geometry of the new edges
+        G[new_node_id][u][key]['geometry'] = first_part_reversed
+        G[v][new_node_id][key]['geometry'] = second_part_reversed
+
+        # Update the length of the new edges
+        G[new_node_id][u][key]['length'] = length_in_meters(first_part_reversed)
+        G[v][new_node_id][key]['length'] = length_in_meters(second_part_reversed)
+
+        # Remove the original edge
+        G.remove_edge(u, v, key)
+
+        # Check if there is an edge in the opposite direction and remove it
+        if G.has_edge(v, u):
+            G.remove_edge(v, u, key)
+
+    return G
+
+
+
+def add_node_on_nearest_edge_old(G, point, search_nearby=True):
 
     # Ověří, zda se poblíž vytvářeného uzlu nenachází jiný vhodný uzel v toleranci, pokud ano, vrátí graf bez změn
     if search_nearby:
@@ -548,6 +624,13 @@ if __name__ == '__main__':
 
         update_status(status,"Stahuji OSM data") ### @@@ aktualizace streamlit stavu
         G = download_osm_graph(center_coordinates, area_half_side_length)
+        
+        #recalculate length of edges based on more accurate CRS
+        # for u, v, key, data in G.edges(keys =True, data=True):
+        #     if 'geometry' in G[u][v][0]:
+        #         geometry = G[u][v][0]['geometry']
+        #         length = length_in_meters(geometry)
+        #         G[u][v][0]["length"] = length
 
         # Vytvoří nové uzly na hranách, které jsou nejbližší k bodům v dataframu
         G = add_nodes_from_gdf(G, gdf)
